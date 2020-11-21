@@ -25,20 +25,21 @@ static TRIE* AT_Criar(){
     return noh;
 }
 
-static void AT_Inserir_I(TRIE **T, unsigned char *chave, int val){
-    int i;
-    TRIE** aux = T;
-    for(i = 0; i <= strlen(chave); i++){
-        if(*aux == NULL)
-            *aux = AT_Criar();
-        if(i == strlen(chave)){
-            (*aux)->val = val;
-            (*aux)->estado = ATE_OCUPADO;
-        }
-        aux = &(*aux)->filhos[chave[i]];
+static void AT_Inserir_R(TRIE **T, unsigned char *chave, int val, int n, int p) {
+    if(*T == NULL) {
+        *T = AT_Criar();
     }
-    (*T)->tamanho++;
+    if(p == n) {
+        (*T)->val = val;
+        (*T)->estado = ATE_OCUPADO;
+        return;
+    }
+    AT_Inserir_R(&(*T)->filhos[chave[p] % 97], chave, val, n, p+1);    
+}
 
+static void AT_Inserir(TRIE **T, unsigned char *chave, int val) {
+    AT_Inserir_R(T, chave, val, strlen(chave), 0);   
+    (*T)->tamanho++; 
 }
 
 static void inserirDic(TRIE** T, char* arq_lista_palavras) {
@@ -48,21 +49,22 @@ static void inserirDic(TRIE** T, char* arq_lista_palavras) {
     FILE* fp = fopen(arq_lista_palavras, "r");
 
     while (fgets (palavra, sizeof(palavra), fp)) {
-        char et[MAXC] = "";
+        char buffer[MAXC] = "";
 
         if (linha == 1) {
           palavra[strlen(palavra) - 1] = '\0';
         }
 
         if(linha != 1) {
-          sscanf (palavra, "%s", et);
-          strcpy(palavra, et);
+          sscanf (palavra, "%s", buffer);
+          strcpy(palavra, buffer);
         }
-        printf("%s\n", palavra);
-        AT_Inserir_I(T, palavra, linha);
+
+        toLower(palavra);
+        AT_Inserir(T, palavra, linha);
         linha++;
     }
-
+    printf("Terminei de ler o arquivo de dicionario e escrevi %d palavras na TRIE\n", linha);
     fclose(fp);
 }
 
@@ -88,7 +90,6 @@ void AT_Imprimir_R(TRIE* T, int nivel, unsigned char c){
 }
 
 void AT_Imprimir(TRIE* T){
-    printf("\n");
     AT_Imprimir_R(T, 0, ' ');
 }
 

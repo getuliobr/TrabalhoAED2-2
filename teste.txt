@@ -6,3 +6,5 @@ diamente
 eletrica
 fazenda
 galo
+hOTEL
+TESTE
