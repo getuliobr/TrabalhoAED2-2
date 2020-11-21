@@ -1,6 +1,7 @@
-#include "trie.c"
+#include <stdio.h>
+#include "trie.h"
 
 int main(){
-    TRIE* teste = ConstruirDicionario("teste.txt");
+    TRIE* teste = ConstruirDicionario("br.txt");
     AT_Imprimir(teste);
 }
