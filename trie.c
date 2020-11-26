@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "trie.h"
-#include "TAD_Lista.h"
 
 #define MAXC 64   
+
+static int mappedChar(int chr) {
+    return chr % 'a';
+}
 
 static void toLower(char* str) {
     for(int i = 0; str[i]; i++){
@@ -35,7 +38,7 @@ static void AT_Inserir_R(TRIE **T, unsigned char *chave, int val, int n, int p) 
         (*T)->estado = ATE_OCUPADO;
         return;
     }
-    AT_Inserir_R(&(*T)->filhos[chave[p] % 97], chave, val, n, p+1);    
+    AT_Inserir_R(&(*T)->filhos[mappedChar(chave[p])], chave, val, n, p+1);    
 }
 
 static void AT_Inserir(TRIE **T, unsigned char *chave, int val) {
@@ -97,18 +100,22 @@ void AT_Imprimir(TRIE* T){
 void Busca_Palavra_Prefixo(TRIE *T, char* prefix, Lista* retorno){
     int i;
     if(T != NULL){
-        if(T->estado == ATE_OCUPADO)
+        if(T->estado == ATE_OCUPADO) {
             lista_inserir_fim(retorno, prefix);
+        }
 
-        realloc(prefix, sizeof(char)*(strlen(prefix)+2));
         int tam_prefix = strlen(prefix);
+        char* aux = (char*) malloc(tam_prefix + 2);
+        strcpy(aux, prefix);
+
         for(i = 0; i < 26; i++){
             if(T->filhos[i] != NULL){
-                prefix[tam_prefix] = 'a'+i;
-                prefix[tam_prefix+1] = '\0';
-                Busca_Palavra_Prefixo(T->filhos[i], prefix, retorno);
+                aux[tam_prefix] = 'a'+i;
+                aux[tam_prefix+1] = '\0';
+                Busca_Palavra_Prefixo(T->filhos[i], aux, retorno);
             }
         }
+        free(aux);
     }
 }
 
@@ -117,8 +124,11 @@ Lista* TRIE_ChavesComPrefixo(TRIE * T, char* prefix){
     int tam = strlen(prefix);
     TRIE* aux = T;
     Lista* palavras = lista_criar();
+    char* strAux = (char*) malloc(strlen(prefix) + 1);
+    strcpy(strAux, prefix);
     for(i = 0; i < tam; i++)
-        aux = aux->filhos[prefix[i]];
-    Busca_Palavra_Prefixo(aux, prefix, palavras);
+        aux = aux->filhos[mappedChar(prefix[i])];
+    Busca_Palavra_Prefixo(aux, strAux, palavras);
+
     return palavras;
 }

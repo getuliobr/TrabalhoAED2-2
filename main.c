@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "trie.h"
-#include "TAD_Lista.h"
+#include "lista.h"
 
 int main(){
     TRIE* teste = ConstruirDicionario("br.txt");
-    Lista* teste1 = TRIE_ChavesComPrefixo(teste, "ar");
+    Lista* teste1 = TRIE_ChavesComPrefixo(teste, "arg");
     lista_imprimir(teste1);
 }

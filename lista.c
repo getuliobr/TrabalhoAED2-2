@@ -1,40 +1,7 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-
-typedef enum boolean{false=0, true=1} Boolean;
-typedef char* Tipo;
-
-
-typedef struct no{
-    Tipo dado;
-    struct no* prox;
-    struct no* ant;
-}No;
-
-typedef struct{
-    No* primeiro;
-    No* ultimo;
-    int qtde;
-}Lista;
-
-
-Lista* lista_criar();
-void lista_destruir(Lista* l);
-
-void lista_inserir(Lista* l, Tipo elemento, int posicao);
-void lista_inserir_fim(Lista* l, Tipo elemento);
-
-int* lista_remover1(Lista* l, int posicao);
-Boolean lista_remover2(Lista* l, int posicao, Tipo* endereco);
-Boolean lista_remover_elemento(Lista* l, Tipo elemento);
-
-
-Boolean lista_buscar(Lista* l, int posicao, int* endereco);
-Boolean lista_contem(Lista* l, Tipo elemento);
-int lista_posicao(Lista* l, Tipo elemento);
-
-int lista_tamanho(Lista* l);
-void lista_imprimir(Lista* l);
+#include "lista.h"
 
 Lista* lista_criar(){
     Lista* l = (Lista*) malloc(sizeof(Lista));
@@ -53,15 +20,17 @@ void lista_destruir(Lista* l){
         free(aux2);
     }
     free(l);
-    return NULL;
 }
 
 /*
     CRIA NÓ
                 */
 No* criaNo(Tipo elemento, No* anterior, No* proximo){
+    Tipo novoElemento = (Tipo) malloc(strlen(elemento) + 1);
+    memcpy(novoElemento, elemento, strlen(elemento) + 1);
+    
     No* n = (No*) malloc(sizeof(No));
-    n->dado = elemento;
+    n->dado = novoElemento;
     n->ant = anterior;
     n->prox = proximo;
     return n;
@@ -230,7 +199,7 @@ Boolean lista_remover_elemento(Lista* l, Tipo elemento){
     return true;
 }
 
-Boolean lista_buscar(Lista* l, int posicao, int* endereco){
+Boolean lista_buscar(Lista* l, int posicao, Tipo* endereco){
     if(l == NULL)   return false;
     if(posicao > l->qtde-1 || posicao < 0) return false;
     if(l->qtde == 0)    return false;
