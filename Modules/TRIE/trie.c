@@ -161,12 +161,13 @@ void Busca_Palavras_que_Casam(TRIE* T, char* padrao, int nivel, int sem_extra, L
 
 Lista* TRIE_ChavesQueCasam(TRIE *T, char* padrao, int n_extras){
     int i;
-    int tam = n_extras == 0 ? strlen(padrao): strlen(padrao)+n_extras;
+    int tam = n_extras == 0 ? strlen(padrao)+1: strlen(padrao)+n_extras+1;
     char* aux = malloc(tam);
     strcpy(aux, padrao);
     for(i = strlen(padrao); i < tam; i++){
         aux[i] = '*';
     }
+    aux[tam-1] = '\0';
     Lista* palavras = lista_criar();
     Busca_Palavras_que_Casam(T, aux, 0, strlen(padrao)-1, palavras);
     return palavras;
