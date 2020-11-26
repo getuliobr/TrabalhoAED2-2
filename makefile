@@ -3,7 +3,7 @@ all: TRIE LISTA
 	rm *.o
 
 TRIE:
-	gcc -g -c trie.c
+	gcc -g -c ./Modules/TRIE/trie.c
 
 LISTA:
-	gcc -g -c lista.c
+	gcc -g -c ./Modules/Lista/lista.c

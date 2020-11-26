@@ -1,5 +1,5 @@
 #pragma once
-#include "lista.h"
+#include "../Lista/lista.h"
 
 typedef enum TRIE_Estado{
     ATE_LIVRE,

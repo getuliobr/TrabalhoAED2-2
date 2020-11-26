@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "trie.h"
-#include "lista.h"
+#include "./Modules/Lista/lista.h"
+#include "./Modules/TRIE/trie.h"
 
 int main(){
     TRIE* teste = ConstruirDicionario("br.txt");
