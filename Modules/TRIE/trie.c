@@ -180,26 +180,21 @@ Lista* TRIE_ChavesQueCasam(TRIE *T, char* padrao, int n_extras){
 }
 
 char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s){
-    int i;
+    Lista* chaves = lista_criar();
     int tam = strlen(s);
-    char* aux = malloc(2);
-    TRIE* aux_trie = T;
-    char* retorno = NULL;
-    for(i = 0; i < tam; i++){
-        if(aux_trie->estado == ATE_OCUPADO){
-            free(retorno);
-            retorno = malloc(i+2);
-            strcpy(retorno, aux);
-            retorno[i+1] = '\0';
-        }
-        if(aux_trie->filhos[s[i]] != NULL){
-            realloc(aux, sizeof(aux)+1);
-            aux[i] = 'a'+i;
-            printf("%s\n",aux);
-            aux_trie = aux_trie->filhos[i];
-        }
-
+    int currPos = 0;
+    char* maiorChave = (char*) malloc(tam + 1);
+    maiorChave[0] = '\0';
+    TRIE* aux = T;
+    for(int i = 0; i < tam; i++) {
+        if(aux->estado == ATE_OCUPADO) lista_inserir_fim(chaves, maiorChave);
+        if(aux->filhos[mappedChar(s[i])] == NULL) break;
+        maiorChave[currPos++] = s[i];
+        maiorChave[currPos] = '\0';
+        aux = aux->filhos[mappedChar(s[i])];
     }
-    free(aux);
-    return retorno;
+    char* toCopy = (char*)chaves->ultimo->dado;
+    strcpy(maiorChave, toCopy);
+    lista_destruir(chaves);
+    return maiorChave;
 }

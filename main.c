@@ -4,6 +4,6 @@
 
 int main(){
     TRIE* teste = ConstruirDicionario("br.txt");
-    char* teste1 = TRIE_ChaveMaiorPrefixoDe(teste, "agulhadora");
+    char* teste1 = TRIE_ChaveMaiorPrefixoDe(teste, "desengarrafareira");
     printf("%s\n",teste1);
 }

@@ -18,6 +18,7 @@ void lista_destruir(Lista* l){
         aux2 = aux;
         aux = aux->prox;
         free(aux2);
+        free(aux2->dado);
     }
     free(l);
 }
