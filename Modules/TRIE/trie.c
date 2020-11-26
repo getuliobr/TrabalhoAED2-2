@@ -178,3 +178,28 @@ Lista* TRIE_ChavesQueCasam(TRIE *T, char* padrao, int n_extras){
     Busca_Palavras_que_Casam(T, aux, 0, strlen(padrao)-1, palavras);
     return palavras;
 }
+
+char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s){
+    int i;
+    int tam = strlen(s);
+    char* aux = malloc(2);
+    TRIE* aux_trie = T;
+    char* retorno = NULL;
+    for(i = 0; i < tam; i++){
+        if(aux_trie->estado == ATE_OCUPADO){
+            free(retorno);
+            retorno = malloc(i+2);
+            strcpy(retorno, aux);
+            retorno[i+1] = '\0';
+        }
+        if(aux_trie->filhos[s[i]] != NULL){
+            realloc(aux, sizeof(aux)+1);
+            aux[i] = 'a'+i;
+            printf("%s\n",aux);
+            aux_trie = aux_trie->filhos[i];
+        }
+
+    }
+    free(aux);
+    return retorno;
+}
