@@ -4,6 +4,6 @@
 
 int main(){
     TRIE* teste = ConstruirDicionario("br.txt");
-    Lista* teste1 = TRIE_ChavesQueCasam(teste, "ar", 4);
+    Lista* teste1 = TRIE_ChavesQueCasam(teste, "ca**o", 0);
     lista_imprimir(teste1);
 }

@@ -136,21 +136,27 @@ Lista* TRIE_ChavesComPrefixo(TRIE * T, char* prefix){
 void Busca_Palavras_que_Casam(TRIE* T, char* padrao, int nivel, int sem_extra, Lista* l){
     int i;
     if(T != NULL){
-        if(nivel >= sem_extra && nivel < strlen(padrao) && T->estado == ATE_OCUPADO)
-            lista_inserir_fim(l, padrao);
+        if(nivel > strlen(padrao)) return;
+        if(nivel > sem_extra && nivel <= strlen(padrao) && T->estado == ATE_OCUPADO) {
+            char* toInsert = (char*) malloc(nivel + 1);
+            memcpy(toInsert, padrao, nivel);
+            toInsert[nivel] = '\0';
+            lista_inserir_fim(l, toInsert);
+            free(toInsert);
+        }
 
         char *aux = malloc(strlen(padrao)+1);
         strcpy(aux, padrao);
         aux[strlen(padrao)] = '\0';
 
         if(padrao[nivel] != '*'){
-            Busca_Palavras_que_Casam(T, aux, nivel+1, sem_extra, l);
+            Busca_Palavras_que_Casam(T->filhos[mappedChar(padrao[nivel])], aux, nivel+1, sem_extra, l);
         }
         else{
             for(i = 0; i < 26; i++){
                 if(T->filhos[i] != NULL){
                     aux[nivel] = 'a'+i;
-                    Busca_Palavras_que_Casam(T, aux, nivel+1, sem_extra, l);
+                    Busca_Palavras_que_Casam(T->filhos[i], aux, nivel+1, sem_extra, l);
                 }
             }
         }
