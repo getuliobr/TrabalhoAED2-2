@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "trie.h"
+#include "TAD_Lista.h"
 
 #define MAXC 64   
 
@@ -93,3 +94,31 @@ void AT_Imprimir(TRIE* T){
     AT_Imprimir_R(T, 0, ' ');
 }
 
+void Busca_Palavra_Prefixo(TRIE *T, char* prefix, Lista* retorno){
+    int i;
+    if(T != NULL){
+        if(T->estado == ATE_OCUPADO)
+            lista_inserir_fim(retorno, prefix);
+
+        realloc(prefix, sizeof(char)*(strlen(prefix)+2));
+        int tam_prefix = strlen(prefix);
+        for(i = 0; i < 26; i++){
+            if(T->filhos[i] != NULL){
+                prefix[tam_prefix] = 'a'+i;
+                prefix[tam_prefix+1] = '\0';
+                Busca_Palavra_Prefixo(T->filhos[i], prefix, retorno);
+            }
+        }
+    }
+}
+
+Lista* TRIE_ChavesComPrefixo(TRIE * T, char* prefix){
+    int i;
+    int tam = strlen(prefix);
+    TRIE* aux = T;
+    Lista* palavras = lista_criar();
+    for(i = 0; i < tam; i++)
+        aux = aux->filhos[prefix[i]];
+    Busca_Palavra_Prefixo(aux, prefix, palavras);
+    return palavras;
+}

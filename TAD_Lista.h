@@ -44,7 +44,7 @@ Lista* lista_criar(){
     return l;
 }
 
-Lista* lista_destruir(Lista* l){
+void lista_destruir(Lista* l){
     No* aux = l->primeiro;
     No* aux2;
     for(int i = 0; i < l->qtde; i++){
@@ -270,4 +270,13 @@ int lista_posicao(Lista* l, Tipo elemento){
 
 int lista_tamanho(Lista *l){
     return l->qtde;
+}
+
+
+void lista_imprimir(Lista* l){
+    No *aux = l->primeiro;
+    for(int i = 0; i < l->qtde; i++){
+        printf("%s\n",aux->dado);
+        aux = aux->prox;
+    }
 }
