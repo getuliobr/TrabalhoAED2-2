@@ -99,7 +99,7 @@ void lista_inserir_fim(Lista* l, Tipo elemento){
 }
 
 int* lista_remover1(Lista* l, int posicao){
-    int* elemento = (int*) malloc(sizeof(int));
+    Tipo* elemento = (Tipo*) malloc(sizeof(Tipo));
     if(l->qtde == 1){
         *elemento = l->primeiro->dado;
         l->qtde--;
@@ -132,7 +132,7 @@ int* lista_remover1(Lista* l, int posicao){
 }
 
 Boolean lista_remover2(Lista* l, int posicao, Tipo* endereco){
-    if(l == NULL)   return false;
+    if(l == NULL) return false;
     
     if(l->qtde == 1){
         *endereco = l->primeiro->dado;
