@@ -24,3 +24,4 @@ Lista* TRIE_ChavesComPrefixo(TRIE * T, char* prefix);
 Lista* TRIE_ChavesQueCasam(TRIE *T, char* padrao, int n_extras);
 char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s);
 void CorrigirOrtografia(TRIE* dicionario, char* texto);
+int noDicionario(TRIE* dicionario, char* palavra);

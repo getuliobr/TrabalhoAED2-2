@@ -194,6 +194,7 @@ char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s){
         maiorChave[currPos] = '\0';
         aux = aux->filhos[mappedChar(s[i])];
     }
+    if(chaves->ultimo == NULL) return NULL;
     char* toCopy = (char*)chaves->ultimo->dado;
     strcpy(maiorChave, toCopy);
     lista_destruir(chaves);
@@ -238,6 +239,7 @@ static void CorrigirOrtografia_Regra2(TRIE* dicionario, TRIE* entrada, char* pal
 
 static void CorrigirOrtografia_Regra3(TRIE* dicionario, TRIE* entrada, char* palavra) {
     char* out = TRIE_ChaveMaiorPrefixoDe(dicionario, palavra);
+    if(out == NULL) return;
     AT_Inserir(&entrada, out, entrada->tamanho);
     free(out);
 }
@@ -257,6 +259,16 @@ static int checarFiltro(char ch, char* filtro) {
     return 0;
 }
 
+int noDicionario(TRIE* dicionario, char* palavra) {
+    TRIE* aux = dicionario;
+    int tamanho = strlen(palavra);
+    for(int i = 0; i < tamanho; i++) {
+        aux = aux->filhos[mappedChar(palavra[i])];
+        if(aux == NULL) return 0;
+    }
+    return 1;
+}
+
 void CorrigirOrtografia(TRIE* dicionario, char* texto){
     FILE* arq = fopen(texto, "r");
     int size = fseek(arq, 0L, SEEK_END);
@@ -272,9 +284,12 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
         ch = fgetc(arq);
         if(checarFiltro(ch, filtro)) {
             palavra[pos] = '\0';
-            TRIE* trieEntrada = AT_Criar();
-            Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
-            lista_imprimir(sugestoes);
+            if(!noDicionario(dicionario, palavra)) {
+                TRIE* trieEntrada = AT_Criar();
+                printf("Palavra: %s\n", palavra);
+                Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
+                lista_imprimir(sugestoes);
+            }
             pos = 0;
             if(ch == EOF) return;
             continue;
