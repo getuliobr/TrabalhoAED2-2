@@ -51,7 +51,7 @@ static void inserirDic(TRIE** T, char* arq_lista_palavras) {
     char palavra[MAXC] = "";
     int linha = 1;
     FILE* fp = fopen(arq_lista_palavras, "r");
-
+    int maiorPalavra = 0;
     while (fgets (palavra, sizeof(palavra), fp)) {
         char buffer[MAXC] = "";
 
@@ -65,10 +65,11 @@ static void inserirDic(TRIE** T, char* arq_lista_palavras) {
         }
 
         toLower(palavra);
+        if(strlen(palavra) > maiorPalavra) maiorPalavra = strlen(palavra);
         AT_Inserir(T, palavra, linha);
         linha++;
     }
-    printf("Terminei de ler o arquivo de dicionario e escrevi %d palavras na TRIE\n", linha);
+    printf("Terminei de ler o arquivo de dicionario e escrevi %d palavras na TRIE\nA maior palavra tinha %d caracteres\n", linha, maiorPalavra);
     fclose(fp);
 }
 
