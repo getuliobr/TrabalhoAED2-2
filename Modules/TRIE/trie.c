@@ -210,7 +210,7 @@ static void inserir_dic(TRIE** dicionario, Lista* l){
     }
 }
 
-Lista* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
+static TRIE* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
     char* aux = malloc(strlen(palavra));
 
     TRIE* dic = AT_Criar();
@@ -223,21 +223,37 @@ Lista* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
         lista_destruir(listaAux);
     }
 
-    return TRIE_ChavesQueCasam(dic, "*", 30);
+    return dic;
 }
 
-
-
+static int checarFiltro(char ch, char* filtro) {
+    for(int i = 0; i < strlen(filtro); i++)
+        if(ch == filtro[i] || ch == EOF)
+            return 1;
+    return 0;
+}
 
 void CorrigirOrtografia(TRIE* dicionario, char* texto){
-    FILE* arq = fopen( texto, "r");
+    FILE* arq = fopen(texto, "r");
     int size = fseek(arq, 0L, SEEK_END);
     rewind(arq);
-    char* texto_ = malloc(size);
-    char* palavra = strtok(texto_, " ,.:;\"-");
-    while(palavra != NULL){
-        /*Regra 1*/
-        
 
+    char* filtro = " ,.:;\"-\n";
+
+    char ch;
+    char* palavra = (char*) malloc(MAXC);
+
+    int pos = 0;
+    while (1) {
+        ch = fgetc(arq);
+        if(checarFiltro(ch, filtro)) {
+            palavra[pos] = '\0';
+            TRIE* out = CorrigirOrtografia_Regra1(dicionario, palavra);
+            lista_imprimir(TRIE_ChavesQueCasam(out, "*", MAXC));
+            pos = 0;
+            if(ch == EOF) return;
+            continue;
+        }
+        palavra[pos++] = ch;
     }
 }

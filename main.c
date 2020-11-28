@@ -4,7 +4,6 @@
 
 
 int main(){
-    TRIE* teste = ConstruirDicionario("br.txt");
-    Lista* teste1 = CorrigirOrtografia_Regra1(teste, "rats");
-    lista_imprimir(teste1);
+    TRIE* dicionario = ConstruirDicionario("br.txt");
+    CorrigirOrtografia(dicionario, "teste.txt");
 }
