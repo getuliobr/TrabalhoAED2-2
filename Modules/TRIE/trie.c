@@ -202,33 +202,28 @@ char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s){
 
 static void inserir_dic(TRIE** dicionario, Lista* l){
     int j = l->qtde;
-    Tipo* aux;
+    char* aux;
     for(int i = 0; i < j; i++){
-        lista_remover2(l, l->qtde, aux);
+        lista_remover2(l, 0, &aux);
         AT_Inserir(dicionario, aux, i);
+        free(aux);
     }
 }
 
 Lista* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
     char* aux = malloc(strlen(palavra));
 
-    Lista* retorno = malloc(sizeof(Lista));
     TRIE* dic = AT_Criar();
 
     for(int i = 0; i < strlen(palavra); i++){
         strcpy(aux, palavra);
         aux[i] = '*';
-        Lista* retorno_aux = TRIE_ChavesQueCasam(dicionario, aux, 0);
-        if(retorno != NULL){
-            inserir_dic(&dic, retorno_aux);
-            free(retorno);
-            retorno = malloc(sizeof(Lista));
-        }
+        Lista* listaAux = TRIE_ChavesQueCasam(dicionario, aux, 0);
+        inserir_dic(&dic, listaAux);
+        lista_destruir(listaAux);
     }
-    free(retorno);
-    retorno = TRIE_ChavesQueCasam(dic, "*", 30);
 
-    return retorno;
+    return TRIE_ChavesQueCasam(dic, "*", 30);
 }
 
 
