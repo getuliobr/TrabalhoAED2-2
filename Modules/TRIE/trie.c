@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "trie.h"
 
-#define MAXC 64   
+#define MAXC 64 
 
 static int mappedChar(int chr) {
     return chr % 'a';
@@ -197,4 +197,51 @@ char* TRIE_ChaveMaiorPrefixoDe(TRIE* T, char* s){
     strcpy(maiorChave, toCopy);
     lista_destruir(chaves);
     return maiorChave;
+}
+
+static void inserir_dic(TRIE** dicionario, Lista* l){
+    int j = l->qtde;
+    Tipo* aux;
+    for(int i = 0; i < j; i++){
+        lista_remover2(l, l->qtde, aux);
+        AT_Inserir(dicionario, aux, i);
+    }
+}
+
+Lista* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
+    char* aux = malloc(strlen(palavra));
+
+    Lista* retorno = malloc(sizeof(Lista));
+    TRIE* dic = AT_Criar();
+
+    for(int i = 0; i < strlen(palavra); i++){
+        strcpy(aux, palavra);
+        aux[i] = '*';
+        Lista* retorno_aux = TRIE_ChavesQueCasam(dicionario, aux, 0);
+        if(retorno != NULL){
+            inserir_dic(&dic, retorno_aux);
+            free(retorno);
+            retorno = malloc(sizeof(Lista));
+        }
+    }
+    free(retorno);
+    retorno = TRIE_ChavesQueCasam(dic, "*", 30);
+
+    return retorno;
+}
+
+
+
+
+void CorrigirOrtografia(TRIE* dicionario, char* texto){
+    FILE* arq = fopen( texto, "r");
+    int size = fseek(arq, 0L, SEEK_END);
+    rewind(arq);
+    char* texto_ = malloc(size);
+    char* palavra = strtok(texto_, " ,.:;\"-");
+    while(palavra != NULL){
+        /*Regra 1*/
+        
+
+    }
 }
