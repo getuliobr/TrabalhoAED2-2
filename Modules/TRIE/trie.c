@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "trie.h"
 
-#define MAXC 64 
+#define MAXC 30 
 
 static int mappedChar(int chr) {
     return chr % 'a';
@@ -210,20 +210,45 @@ static void inserir_dic(TRIE** dicionario, Lista* l){
     }
 }
 
-static TRIE* CorrigirOrtografia_Regra1(TRIE* dicionario, char* palavra){
+static void CorrigirOrtografia_Regra1(TRIE* dicionario, TRIE* entrada, char* palavra) {
     char* aux = malloc(strlen(palavra));
-
-    TRIE* dic = AT_Criar();
-
     for(int i = 0; i < strlen(palavra); i++){
         strcpy(aux, palavra);
         aux[i] = '*';
         Lista* listaAux = TRIE_ChavesQueCasam(dicionario, aux, 0);
-        inserir_dic(&dic, listaAux);
+        inserir_dic(&entrada, listaAux);
         lista_destruir(listaAux);
     }
+}
 
-    return dic;
+static void CorrigirOrtografia_Regra2(TRIE* dicionario, TRIE* entrada, char* palavra) {
+    if(strlen(palavra) <= 5) return;
+    // So fazemos com n-3, porque n-2 ja esta incluido.
+    // Exemplo: saladq, sala é prefixo de saladq, que é prefixo de salad, ou seja,
+    // tudo que encontrar em salad vai ser encontrado por sala.
+    int n = strlen(palavra)+1; // Contar o \0
+    char* aux = malloc(n);
+    strcpy(aux, palavra);
+    aux[n - 3] = '\0';
+    Lista* out = TRIE_ChavesComPrefixo(dicionario, aux);
+    free(aux);
+    inserir_dic(&entrada, out);
+    lista_destruir(out);
+}
+
+static void CorrigirOrtografia_Regra3(TRIE* dicionario, TRIE* entrada, char* palavra) {
+    char* out = TRIE_ChaveMaiorPrefixoDe(dicionario, palavra);
+    AT_Inserir(&entrada, out, entrada->tamanho);
+    free(out);
+}
+
+static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, TRIE* entrada, char* palavra) {
+    CorrigirOrtografia_Regra2(dicionario, entrada, palavra);
+    TRIE* novaTrie = AT_Criar();
+    CorrigirOrtografia_Regra1((strlen(palavra) <= 5) ? dicionario : entrada, novaTrie, palavra);
+    CorrigirOrtografia_Regra3(dicionario, novaTrie, palavra);
+
+    return TRIE_ChavesQueCasam(novaTrie, "*", MAXC);
 }
 
 static int checarFiltro(char ch, char* filtro) {
@@ -248,8 +273,9 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
         ch = fgetc(arq);
         if(checarFiltro(ch, filtro)) {
             palavra[pos] = '\0';
-            TRIE* out = CorrigirOrtografia_Regra1(dicionario, palavra);
-            lista_imprimir(TRIE_ChavesQueCasam(out, "*", MAXC));
+            TRIE* trieEntrada = AT_Criar();
+            Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
+            lista_imprimir(sugestoes);
             pos = 0;
             if(ch == EOF) return;
             continue;
