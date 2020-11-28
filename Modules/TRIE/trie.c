@@ -243,9 +243,8 @@ static void CorrigirOrtografia_Regra3(TRIE* dicionario, TRIE* entrada, char* pal
 }
 
 static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, TRIE* entrada, char* palavra) {
-    CorrigirOrtografia_Regra2(dicionario, entrada, palavra);
     TRIE* novaTrie = AT_Criar();
-    CorrigirOrtografia_Regra1((strlen(palavra) <= 5) ? dicionario : entrada, novaTrie, palavra);
+    CorrigirOrtografia_Regra1(dicionario, novaTrie, palavra);
     CorrigirOrtografia_Regra3(dicionario, novaTrie, palavra);
 
     return TRIE_ChavesQueCasam(novaTrie, "*", MAXC);
