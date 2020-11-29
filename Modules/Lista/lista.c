@@ -244,7 +244,8 @@ int lista_tamanho(Lista *l){
 void lista_imprimir(Lista* l){
     No *aux = l->primeiro;
     for(int i = 0; i < l->qtde; i++){
-        printf("%s\n",aux->dado);
+        printf("%s",aux->dado);
+        (i == l->qtde-1) ? printf("\n") : printf(", ");
         aux = aux->prox;
     }
 }

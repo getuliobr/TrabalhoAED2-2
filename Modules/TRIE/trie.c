@@ -314,9 +314,9 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
             palavra[pos] = '\0';
             if(!noDicionario(dicionario, palavra)) {
                 TRIE* trieEntrada = AT_Criar();
-                printf("Palavra: %s\n", palavra);
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
                 Lista_Organiza(&sugestoes);
+                printf("palavra nao esta no dicionario :  %s\nsugestoes :\n", palavra);
                 lista_imprimir(sugestoes);
             }
             pos = 0;
