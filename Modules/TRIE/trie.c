@@ -298,6 +298,10 @@ static void Lista_Organiza(Lista** entrada){
 }
 
 void CorrigirOrtografia(TRIE* dicionario, char* texto){
+    int qtd_palavras = 0;                   // Caso de teste
+    int qtd_palavras_incorretas = 0;        // Caso de teste
+    int qtd_sugestoes = 0;                  // Caso de teste
+
     FILE* arq = fopen(texto, "r");
     int size = fseek(arq, 0L, SEEK_END);
     rewind(arq);
@@ -312,15 +316,23 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
         ch = fgetc(arq);
         if(checarFiltro(ch, filtro)) {
             palavra[pos] = '\0';
+            qtd_palavras++;
             if(!noDicionario(dicionario, palavra)) {
                 TRIE* trieEntrada = AT_Criar();
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
                 Lista_Organiza(&sugestoes);
                 printf("palavra nao esta no dicionario :  %s\nsugestoes :\n", palavra);
                 lista_imprimir(sugestoes);
+                qtd_palavras_incorretas++;
+                qtd_sugestoes += sugestoes->qtde;
             }
             pos = 0;
-            if(ch == EOF) return;
+            if(ch == EOF){
+                printf("Total de palavras : %d\n", qtd_palavras);
+                printf("Total de palavras incorretas : %d\n", qtd_palavras_incorretas);
+                printf("Media de Sugestoes por palavra incorreta : %.3f\n", (float)qtd_sugestoes/qtd_palavras_incorretas);
+                return;
+            }
             continue;
         }
         palavra[pos++] = ch;
