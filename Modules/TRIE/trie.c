@@ -318,14 +318,9 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
         ch = fgetc(arq);
         if(checarFiltro(ch, filtro)) { //Filtra a palavra retirando as pontuações e números
             palavra[pos] = '\0';
-<<<<<<< HEAD
-            qtd_palavras++;
-            if(!noDicionario(dicionario, palavra)) { // Caso a palavra não esteja no dicionario sugere as palavras de acordo com a regra 4
-=======
-            if(strlen(palavra)) qtd_palavras++;
-            toLower(palavra);
+            if(strlen(palavra)) qtd_palavras++; // Verifica caso a palavra não seja uma pontuação
+            toLower(palavra);                   // Coloca a palavra em minusculo
             if(!noDicionario(dicionario, palavra)) {
->>>>>>> b4aa93db571cdb97a90b44f3e28201bb182cf58e
                 TRIE* trieEntrada = AT_Criar();
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
                 Lista_Organiza(&sugestoes);
