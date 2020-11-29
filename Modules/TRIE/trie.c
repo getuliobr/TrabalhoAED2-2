@@ -269,6 +269,30 @@ int noDicionario(TRIE* dicionario, char* palavra) {
     return 1;
 }
 
+static void Lista_Organiza(Lista** entrada){
+    No* aux;
+    int tam = (*entrada)->qtde;
+    int proximo;
+    int tam_proximo;
+    Lista* retorno  = lista_criar();
+    for(int i = 0; i < tam; i++){
+        aux = (*entrada)->primeiro;
+        proximo = 0;
+        tam_proximo = strlen(aux->dado);
+        aux = aux->prox;
+        for(int j = 1; j < (*entrada)->qtde; j++){
+            if(strlen(aux->dado) > tam_proximo){
+                proximo = j;
+                tam_proximo = strlen(aux->dado);
+            }
+            aux = aux->prox;
+        }
+        lista_inserir_fim(retorno, lista_remover1(retorno, proximo));
+    }
+    free(*entrada);
+    *entrada = retorno;
+}
+
 void CorrigirOrtografia(TRIE* dicionario, char* texto){
     FILE* arq = fopen(texto, "r");
     int size = fseek(arq, 0L, SEEK_END);
