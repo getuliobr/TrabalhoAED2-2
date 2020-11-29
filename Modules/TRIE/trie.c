@@ -274,20 +274,24 @@ static void Lista_Organiza(Lista** entrada){
     int tam = (*entrada)->qtde;
     int proximo;
     int tam_proximo;
+    char* proximo_char;
     Lista* retorno  = lista_criar();
     for(int i = 0; i < tam; i++){
         aux = (*entrada)->primeiro;
         proximo = 0;
+        proximo_char = aux->dado;
         tam_proximo = strlen(aux->dado);
         aux = aux->prox;
         for(int j = 1; j < (*entrada)->qtde; j++){
             if(strlen(aux->dado) > tam_proximo){
                 proximo = j;
                 tam_proximo = strlen(aux->dado);
+                proximo_char = aux->dado;
             }
             aux = aux->prox;
         }
-        lista_inserir_fim(retorno, lista_remover1((*entrada), proximo));
+        lista_inserir_fim(retorno, proximo_char);
+        lista_remover1(*entrada, proximo);
     }
     free(*entrada);
     *entrada = retorno;
