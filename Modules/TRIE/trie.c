@@ -306,7 +306,7 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
     int size = fseek(arq, 0L, SEEK_END);
     rewind(arq);
 
-    char* filtro = " 1234567890,.!?:;\"-\n";
+    char* filtro = " 1234567890(),.!?:;\"_-\n";
 
     char ch;
     char* palavra = (char*) malloc(MAXC);
@@ -316,7 +316,8 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
         ch = fgetc(arq);
         if(checarFiltro(ch, filtro)) {
             palavra[pos] = '\0';
-            qtd_palavras++;
+            if(strlen(palavra)) qtd_palavras++;
+            toLower(palavra);
             if(!noDicionario(dicionario, palavra)) {
                 TRIE* trieEntrada = AT_Criar();
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
@@ -334,7 +335,8 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
                 return;
             }
             continue;
+        } else {
+            palavra[pos++] = ch;
         }
-        palavra[pos++] = ch;
     }
 }
