@@ -302,7 +302,7 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
     int size = fseek(arq, 0L, SEEK_END);
     rewind(arq);
 
-    char* filtro = " ,.:;\"-\n";
+    char* filtro = " 1234567890,.!?:;\"-\n";
 
     char ch;
     char* palavra = (char*) malloc(MAXC);
