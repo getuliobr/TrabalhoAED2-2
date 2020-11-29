@@ -287,7 +287,7 @@ static void Lista_Organiza(Lista** entrada){
             }
             aux = aux->prox;
         }
-        lista_inserir_fim(retorno, lista_remover1(retorno, proximo));
+        lista_inserir_fim(retorno, lista_remover1((*entrada), proximo));
     }
     free(*entrada);
     *entrada = retorno;
@@ -312,6 +312,7 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
                 TRIE* trieEntrada = AT_Criar();
                 printf("Palavra: %s\n", palavra);
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
+                Lista_Organiza(&sugestoes);
                 lista_imprimir(sugestoes);
             }
             pos = 0;

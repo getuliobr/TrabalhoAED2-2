@@ -99,24 +99,21 @@ void lista_inserir_fim(Lista* l, Tipo elemento){
     }
 }
 
-int* lista_remover1(Lista* l, int posicao){
-    Tipo* elemento = (Tipo*) malloc(sizeof(Tipo));
+Tipo lista_remover1(Lista* l, int posicao){
+    Tipo elemento = (Tipo   ) malloc(sizeof(Tipo));
     if(l->qtde == 1){
-        *elemento = l->primeiro->dado;
-        l->qtde--;
+        elemento = l->primeiro->dado;
         l->primeiro = l->ultimo = NULL;
     }
     else if(posicao == 0){
-        *elemento = l->primeiro->dado;
-        l->qtde--;
+        elemento = l->primeiro->dado;
         No* aux = l->primeiro;
         aux->prox->ant = NULL;
         l->primeiro = l->primeiro->prox;
         free(aux);
     }
     else if(posicao == l->qtde - 1){
-        *elemento = l->primeiro->dado;
-        l->qtde--;
+        elemento = l->primeiro->dado;
         No* aux = l->ultimo;
         aux->ant->prox = NULL;
         l->ultimo = l->ultimo->ant;
@@ -126,10 +123,11 @@ int* lista_remover1(Lista* l, int posicao){
         No* aux = getNo(l,posicao);
         aux->ant->prox = aux->prox;
         aux->prox->ant = aux->ant;
-        *elemento = aux->dado;
-        l->qtde--;
+        elemento = aux->dado;
         free(aux);
     }
+    l->qtde--;
+    return elemento;
 }
 
 Boolean lista_remover2(Lista* l, int posicao, Tipo* endereco){
