@@ -5,7 +5,7 @@
 
 Lista* lista_criar(){
     Lista* l = (Lista*) malloc(sizeof(Lista));
-    l->qtde =0 ; 
+    l->qtde =0; 
     l->primeiro = NULL;
     l->ultimo = NULL;
     return l;
@@ -17,8 +17,8 @@ void lista_destruir(Lista* l){
     for(int i = 0; i < l->qtde; i++){
         aux2 = aux;
         aux = aux->prox;
-        free(aux2);
         free(aux2->dado);
+        free(aux2);
     }
     free(l);
 }
