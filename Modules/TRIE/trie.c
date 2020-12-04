@@ -248,13 +248,21 @@ static void CorrigirOrtografia_Regra3(TRIE* dicionario, TRIE* entrada, char* pal
 }
 
 static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, TRIE* entrada, char* palavra) {
-    //Junção da regra 1 e 3
-    TRIE* novaTrie = AT_Criar();
-    CorrigirOrtografia_Regra1(dicionario, novaTrie, palavra);
-    CorrigirOrtografia_Regra2(dicionario, novaTrie, palavra);
-    CorrigirOrtografia_Regra3(dicionario, novaTrie, palavra);
+    //Usa a Regra 1 e Regra 3 e utiliza do dicionario pra buscar palavras com prefixo que foram encontrados no uso da regra 1 e 3
+    TRIE* NovaTrie = AT_Criar();
+    CorrigirOrtografia_Regra1(dicionario, NovaTrie, palavra);
+    CorrigirOrtografia_Regra3(dicionario, NovaTrie, palavra);
 
-    return TRIE_ChavesQueCasam(novaTrie, "*", 50);
+   Lista* Lista_aux = TRIE_ChavesQueCasam(NovaTrie, "*", 50);
+   No* aux = Lista_aux->primeiro;
+
+   for(int i = 0; i < Lista_aux->qtde; i++){
+        if(strlen(aux->dado) == strlen(palavra) && strlen(palavra) > 5)
+            inserir_dic(&NovaTrie, TRIE_ChavesComPrefixo(dicionario, aux->dado));
+        aux = aux->prox;
+   }
+
+   return TRIE_ChavesQueCasam(NovaTrie, "*", 50);
 }
 
 static int checarFiltro(char ch, char* filtro) { // Função para retirar pontuações do texto
@@ -326,6 +334,10 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
             toLower(palavra);                   // Coloca a palavra em minusculo
             if(!noDicionario(dicionario, palavra)) {
                 TRIE* trieEntrada = AT_Criar();
+                CorrigirOrtografia_Regra1(dicionario, trieEntrada, palavra);
+                CorrigirOrtografia_Regra2(dicionario, trieEntrada, palavra);
+                CorrigirOrtografia_Regra3(dicionario, trieEntrada, palavra);
+
                 Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
                 Lista_Organiza(&sugestoes);
                 printf("palavra nao esta no dicionario :  %s\nsugestoes :\n", palavra);
