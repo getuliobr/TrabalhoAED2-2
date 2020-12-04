@@ -108,7 +108,7 @@ Tipo lista_remover1(Lista* l, int posicao){
     else if(posicao == 0){
         elemento = l->primeiro->dado;
         No* aux = l->primeiro;
-        aux->prox->ant = NULL;
+        if(aux->prox != NULL) aux->prox->ant = NULL;
         l->primeiro = l->primeiro->prox;
         free(aux);
     }
@@ -142,7 +142,7 @@ Boolean lista_remover2(Lista* l, int posicao, Tipo* endereco){
         *endereco = l->primeiro->dado;
         l->qtde--;
         No* aux = l->primeiro;
-        aux->prox->ant = NULL;
+        if(aux->prox != NULL) aux->prox->ant = NULL;
         l->primeiro = l->primeiro->prox;
         free(aux);
     }
@@ -172,7 +172,7 @@ Boolean lista_remover_elemento(Lista* l, Tipo elemento){
     int flag = 0;
     int i;
     for(i = 0; i < l->qtde; i++){
-        if(aux->dado == elemento){
+        if(!strcmp(aux->dado, elemento)){
             flag++;
             break;
         }
@@ -182,7 +182,7 @@ Boolean lista_remover_elemento(Lista* l, Tipo elemento){
         return false;
     
     if(i == 0){
-        aux->prox->ant = NULL;
+        if(aux->prox != NULL) aux->prox->ant = NULL;
         l->primeiro = aux->prox;
     }
     else if(i == l->qtde-1){
@@ -194,6 +194,7 @@ Boolean lista_remover_elemento(Lista* l, Tipo elemento){
         aux->prox->ant = aux->ant;
     }
     l->qtde--;
+    free(aux->dado);
     free(aux);
     return true;
 }
@@ -215,8 +216,8 @@ Boolean lista_buscar(Lista* l, int posicao, Tipo* endereco){
 }
 
 Boolean lista_contem(Lista* l, Tipo elemento){
-    if(l == NULL)   return false;
-    if(l->qtde == 0)    return false;
+    if(l == NULL)    return false;
+    if(l->qtde == 0) return false;
 
     No* aux = l->primeiro;
     for(int i = 0; i < l->qtde; i++){
