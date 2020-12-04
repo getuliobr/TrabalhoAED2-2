@@ -276,35 +276,28 @@ int noDicionario(TRIE* dicionario, char* palavra) { // Checa se a palavra está 
 
 static void Lista_Organiza(Lista** entrada){ // Organiza a Lista de alfabética e colocando as palavras maiores primeiro
     Lista* retorno  = lista_criar();
-    int qtde = (*entrada)->qtde;
+    int qtdePalavras = (*entrada)->qtde;
 
-    No* aux = (*entrada)->primeiro;
-    int tamMaior = strlen(aux->dado);
-    char* maior;
+    No* aux;
+    int tamMaior;
+    char* maiorPalavra;
 
-    int proximo;
-    int tam_proximo;
-    char* proximo_char;
-
-    for(int i = 0; i < qtde; i++) {
-    } 
-
-    for(int i = 0; i < tam; i++){
+    for(int i = 0; i < qtdePalavras; i++) {
         aux = (*entrada)->primeiro;
-        proximo = 0;
-        proximo_char = aux->dado;
-        tam_proximo = strlen(aux->dado);
+        maiorPalavra = aux->dado;
+        tamMaior = strlen(aux->dado);
         aux = aux->prox;
-        for(int j = 1; j < (*entrada)->qtde; j++){
-            if(strlen(aux->dado) > tam_proximo){
-                proximo = j;
-                tam_proximo = strlen(aux->dado);
-                proximo_char = aux->dado;
+
+        for(int j = 1; j < (*entrada)->qtde; j++) {
+            if(strlen(aux->dado) > tamMaior){
+                tamMaior = strlen(aux->dado);
+                maiorPalavra = aux->dado;
             }
             aux = aux->prox;
         }
-        lista_inserir_fim(retorno, proximo_char);
-        lista_remover1(*entrada, proximo);
+
+        lista_inserir_fim(retorno, maiorPalavra);
+        lista_remover_elemento(*entrada, maiorPalavra);
     }
     lista_destruir(*entrada);
     *entrada = retorno;

@@ -216,8 +216,8 @@ Boolean lista_buscar(Lista* l, int posicao, Tipo* endereco){
 }
 
 Boolean lista_contem(Lista* l, Tipo elemento){
-    if(l == NULL)    return false;
-    if(l->qtde == 0) return false;
+    if(l == NULL)   return false;
+    if(l->qtde == 0)    return false;
 
     No* aux = l->primeiro;
     for(int i = 0; i < l->qtde; i++){
