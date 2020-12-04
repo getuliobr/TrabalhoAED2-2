@@ -109,8 +109,8 @@ void Busca_Palavra_Prefixo(TRIE *T, char* prefix, Lista* retorno){
         char* aux = (char*) malloc(tam_prefix + 2); // Cria uma copia do prefixo com 1 letra a mais
         strcpy(aux, prefix);
 
-        for(i = 0; i < 26; i++){
-            if(T->filhos[i] != NULL){               // Procura as letras seguintes do prefixo
+        for(i = 0; i < 26; i++) {
+            if(T->filhos[i] != NULL) {               // Procura as letras seguintes do prefixo
                 aux[tam_prefix] = 'a'+i;            // Caso ache, coloca a letra seguinte na cópia do prefixo e procura a próxima
                 aux[tam_prefix+1] = '\0';
                 Busca_Palavra_Prefixo(T->filhos[i], aux, retorno);
@@ -128,8 +128,10 @@ Lista* TRIE_ChavesComPrefixo(TRIE * T, char* prefix){
     char* strAux = (char*) malloc(strlen(prefix) + 1);      //Cria uma copia do prefixo
     strcpy(strAux, prefix);
 
-    for(i = 0; i < tam; i++)
+    for(i = 0; i < tam; i++) {
         aux = aux->filhos[mappedChar(prefix[i])]; // Redireciona a Trie para onde está a ultima letra do prefixo  
+        if(aux == NULL) return palavras;
+    }
     Busca_Palavra_Prefixo(aux, strAux, palavras); // Procura palavras com o prefixo
 
     return palavras;
@@ -228,13 +230,13 @@ static void CorrigirOrtografia_Regra2(TRIE* dicionario, TRIE* entrada, char* pal
     // So fazemos com n-3, porque n-2 ja esta incluido.
     // Exemplo: saladq, sala é prefixo de saladq, que é prefixo de salad, ou seja,
     // tudo que encontrar em salad vai ser encontrado por sala.
-    int n = strlen(palavra)+1; // Contar o \0
-    char* aux = malloc(n);
+    int n = strlen(palavra); // Contar o \0
+    char* aux = (char*) malloc(n);
     strcpy(aux, palavra);
     aux[n - 3] = '\0';
     Lista* out = TRIE_ChavesComPrefixo(dicionario, aux); // Procura os prefixos
-    free(aux);
     inserir_dic(&entrada, out); // Insere na trie passada por parametro
+    free(aux);
     lista_destruir(out);
 }
 
@@ -249,9 +251,10 @@ static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, TRIE* entrada, char* p
     //Junção da regra 1 e 3
     TRIE* novaTrie = AT_Criar();
     CorrigirOrtografia_Regra1(dicionario, novaTrie, palavra);
+    CorrigirOrtografia_Regra2(dicionario, novaTrie, palavra);
     CorrigirOrtografia_Regra3(dicionario, novaTrie, palavra);
 
-    return TRIE_ChavesQueCasam(novaTrie, "*", MAXC);
+    return TRIE_ChavesQueCasam(novaTrie, "*", 50);
 }
 
 static int checarFiltro(char ch, char* filtro) { // Função para retirar pontuações do texto
@@ -272,12 +275,20 @@ int noDicionario(TRIE* dicionario, char* palavra) { // Checa se a palavra está 
 }
 
 static void Lista_Organiza(Lista** entrada){ // Organiza a Lista de alfabética e colocando as palavras maiores primeiro
-    No* aux;
-    int tam = (*entrada)->qtde;
+    Lista* retorno  = lista_criar();
+    int qtde = (*entrada)->qtde;
+
+    No* aux = (*entrada)->primeiro;
+    int tamMaior = strlen(aux->dado);
+    char* maior;
+
     int proximo;
     int tam_proximo;
     char* proximo_char;
-    Lista* retorno  = lista_criar();
+
+    for(int i = 0; i < qtde; i++) {
+    } 
+
     for(int i = 0; i < tam; i++){
         aux = (*entrada)->primeiro;
         proximo = 0;
@@ -295,7 +306,7 @@ static void Lista_Organiza(Lista** entrada){ // Organiza a Lista de alfabética 
         lista_inserir_fim(retorno, proximo_char);
         lista_remover1(*entrada, proximo);
     }
-    free(*entrada);
+    lista_destruir(*entrada);
     *entrada = retorno;
 }
 
