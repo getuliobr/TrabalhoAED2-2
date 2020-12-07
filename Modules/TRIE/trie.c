@@ -247,7 +247,7 @@ static void CorrigirOrtografia_Regra3(TRIE* dicionario, TRIE* entrada, char* pal
     free(out);
 }
 
-static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, TRIE* entrada, char* palavra) {
+static Lista* CorrigirOrtografia_Regra4(TRIE* dicionario, char* palavra) {
     //Usa a Regra 1 e Regra 3 e utiliza do dicionario pra buscar palavras com prefixo que foram encontrados no uso da regra 1 e 3
     TRIE* NovaTrie = AT_Criar();
     CorrigirOrtografia_Regra1(dicionario, NovaTrie, palavra);
@@ -337,13 +337,18 @@ void CorrigirOrtografia(TRIE* dicionario, char* texto){
                 CorrigirOrtografia_Regra1(dicionario, trieEntrada, palavra);
                 CorrigirOrtografia_Regra2(dicionario, trieEntrada, palavra);
                 CorrigirOrtografia_Regra3(dicionario, trieEntrada, palavra);
-
-                Lista* sugestoes = CorrigirOrtografia_Regra4(dicionario, trieEntrada, palavra);
-                Lista_Organiza(&sugestoes);
-                printf("palavra nao esta no dicionario :  %s\nsugestoes :\n", palavra);
-                lista_imprimir(sugestoes);
-                qtd_palavras_incorretas++;
+                
+                Lista* sugestoes = CorrigirOrtografia_Regra4(trieEntrada, palavra);
+                if(sugestoes->qtde) {
+                    Lista_Organiza(&sugestoes);
+                    printf("palavra nao esta no dicionario :  %s\nsugestoes :\n", palavra);
+                    lista_imprimir(sugestoes);
+                } else {
+                    printf("palavra nao esta no dicionario :  %s\nsem sugestoes\n", palavra);
+                }
                 qtd_sugestoes += sugestoes->qtde;
+                qtd_palavras_incorretas++;
+                lista_destruir(sugestoes);
             }
             pos = 0;
             if(ch == EOF){ // Caso chegue no final do arquivo, imprime os resultados dos testes e fecha a função
